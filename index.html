@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caso #003 — Alta Mar</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080c14;
+  --paper: #eef0f8;
+  --ink: #08100e;
+  --navy: #1a3060;
+  --gold: #c9a227;
+  --smoke: #5a6070;
+  --accent: #2a4a9b;
+  --blood: #6b1a2a;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--paper); font-family:'Courier Prime',monospace; min-height:100vh; overflow-x:hidden; }
+body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E"); pointer-events:none; z-index:998; }
+
+#cover { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:48px 24px; text-align:center; background:radial-gradient(ellipse at 50% 30%, #0a1428 0%, #080c14 65%); }
+.case-stamp { font-family:'Special Elite',cursive; font-size:10px; letter-spacing:0.5em; text-transform:uppercase; color:var(--accent); border:2px solid var(--accent); padding:6px 20px; margin-bottom:40px; display:inline-block; transform:rotate(-2deg); opacity:0; animation:fadeUp 0.8s ease 0.2s forwards; }
+.case-number { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:0.4em; color:var(--smoke); margin-bottom:16px; opacity:0; animation:fadeUp 0.8s ease 0.4s forwards; }
+.cover-title { opacity:0; animation:fadeUp 0.8s ease 0.6s forwards; margin-bottom:8px; }
+.cover-title .caso { font-family:'Libre Baskerville',serif; font-size:clamp(14px,4vw,22px); font-weight:400; font-style:italic; color:var(--smoke); display:block; letter-spacing:0.3em; text-transform:uppercase; margin-bottom:8px; }
+.cover-title .alta { font-family:'Special Elite',cursive; font-size:clamp(56px,18vw,120px); color:var(--paper); display:block; line-height:0.85; letter-spacing:-2px; }
+.cover-title .mar { font-family:'Special Elite',cursive; font-size:clamp(32px,10vw,68px); color:var(--gold); display:block; letter-spacing:0.1em; }
+.cover-divider { width:80px; height:1px; background:linear-gradient(to right, transparent, var(--accent), transparent); margin:32px auto; opacity:0; animation:fadeIn 1s ease 1.2s forwards; }
+.cover-desc { font-family:'Libre Baskerville',serif; font-size:15px; font-style:italic; color:rgba(238,240,248,0.5); max-width:320px; line-height:1.8; opacity:0; animation:fadeUp 0.8s ease 1.4s forwards; margin-bottom:48px; }
+.cover-tags { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:40px; opacity:0; animation:fadeUp 0.8s ease 1.6s forwards; }
+.ctag { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; padding:5px 12px; border:1px solid rgba(201,162,39,0.3); color:var(--smoke); }
+.open-btn { background:transparent; border:1px solid var(--accent); color:var(--accent); font-family:'Special Elite',cursive; font-size:14px; letter-spacing:0.3em; text-transform:uppercase; padding:16px 40px; cursor:pointer; transition:all 0.3s; opacity:0; animation:fadeUp 0.8s ease 1.8s forwards; }
+.open-btn:hover { background:var(--accent); color:var(--paper); }
+
+#briefing { display:none; min-height:100vh; background:var(--bg); padding:48px 24px; flex-direction:column; align-items:center; }
+.brief-header { text-align:center; margin-bottom:32px; width:100%; }
+.brief-label { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:0.5em; text-transform:uppercase; color:var(--accent); display:block; margin-bottom:8px; }
+.brief-title { font-family:'Special Elite',cursive; font-size:clamp(24px,7vw,42px); color:var(--paper); }
+.warning-box { background:rgba(42,74,155,0.08); border:1px solid rgba(42,74,155,0.25); border-left:3px solid var(--accent); padding:14px 16px; max-width:500px; width:100%; margin-bottom:24px; }
+.warning-text { font-family:'Courier Prime',monospace; font-size:11px; letter-spacing:0.1em; color:rgba(238,240,248,0.7); line-height:1.6; }
+.case-file { background:var(--paper); color:var(--ink); max-width:500px; width:100%; padding:32px 28px; position:relative; box-shadow:4px 4px 0 rgba(0,0,0,0.5),8px 8px 0 rgba(0,0,0,0.3); margin-bottom:24px; }
+.case-file::before { content:'CLASIFICADO'; position:absolute; top:16px; right:16px; font-family:'Special Elite',cursive; font-size:10px; letter-spacing:0.2em; color:var(--navy); border:1px solid var(--navy); padding:3px 8px; transform:rotate(3deg); }
+.file-section { margin-bottom:20px; }
+.file-label { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:0.4em; text-transform:uppercase; color:var(--smoke); border-bottom:1px solid rgba(8,16,14,0.2); padding-bottom:6px; margin-bottom:10px; }
+.file-text { font-family:'Libre Baskerville',serif; font-size:14px; line-height:1.8; color:var(--ink); }
+.file-text strong { font-weight:700; }
+.suspect-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:8px; }
+.suspect-card { background:rgba(8,16,14,0.08); border:1px solid rgba(8,16,14,0.15); padding:10px; }
+.suspect-name { font-family:'Special Elite',cursive; font-size:13px; color:var(--ink); margin-bottom:3px; }
+.suspect-role { font-family:'Courier Prime',monospace; font-size:8px; letter-spacing:0.2em; text-transform:uppercase; color:var(--smoke); }
+.start-invest-btn { max-width:500px; width:100%; background:var(--navy); border:none; color:var(--paper); font-family:'Special Elite',cursive; font-size:14px; letter-spacing:0.3em; text-transform:uppercase; padding:18px; cursor:pointer; transition:all 0.2s; }
+.start-invest-btn:hover { background:var(--accent); }
+
+#investigation { display:none; min-height:100vh; flex-direction:column; background:var(--bg); }
+.inv-header { padding:24px 24px 0; display:flex; justify-content:space-between; align-items:flex-start; }
+.inv-case { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:var(--smoke); }
+.inv-phase { font-family:'Special Elite',cursive; font-size:16px; color:var(--gold); }
+.clue-counter { font-family:'Courier Prime',monospace; font-size:9px; color:var(--smoke); text-align:right; }
+.phase-bar { height:2px; background:rgba(255,255,255,0.06); margin:16px 24px 0; }
+.phase-fill { height:100%; background:var(--accent); transition:width 0.5s ease; }
+.phase-badge { background:rgba(201,162,39,0.08); border:1px solid rgba(201,162,39,0.2); border-left:3px solid var(--gold); padding:10px 16px; margin:12px 24px 0; font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); }
+.clue-area { flex:1; padding:20px 24px; display:flex; flex-direction:column; justify-content:center; }
+.clue-card { background:var(--paper); color:var(--ink); padding:24px 20px; position:relative; box-shadow:3px 3px 0 rgba(0,0,0,0.4); min-height:220px; display:flex; flex-direction:column; justify-content:center; }
+.clue-card.pista-falsa { border-top:3px solid #8b6a1a; }
+.clue-card.pista-clave { border-top:3px solid var(--blood); }
+.clue-card.pista-normal { border-top:3px solid rgba(8,16,14,0.3); }
+.clue-type { font-family:'Courier Prime',monospace; font-size:8px; letter-spacing:0.5em; text-transform:uppercase; color:var(--smoke); margin-bottom:14px; display:block; }
+.clue-number { position:absolute; top:10px; right:14px; font-family:'Special Elite',cursive; font-size:28px; color:rgba(8,16,14,0.07); line-height:1; }
+.clue-text { font-family:'Libre Baskerville',serif; font-size:clamp(14px,4vw,19px); font-style:italic; line-height:1.6; color:var(--ink); margin-bottom:14px; }
+.clue-action { font-family:'Courier Prime',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--navy); border-top:1px solid rgba(8,16,14,0.12); padding-top:10px; margin-top:6px; }
+.clue-debate { background:rgba(8,16,14,0.06); padding:10px 12px; margin-top:10px; font-family:'Libre Baskerville',serif; font-size:12px; font-style:italic; color:var(--smoke); border-left:2px solid rgba(201,162,39,0.4); }
+.inv-actions { display:flex; gap:12px; padding:0 24px 28px; }
+.inv-btn-main { flex:2; background:var(--navy); border:none; color:var(--paper); font-family:'Special Elite',cursive; font-size:13px; letter-spacing:0.2em; text-transform:uppercase; padding:16px; cursor:pointer; transition:all 0.2s; }
+.inv-btn-main:hover { background:var(--accent); }
+.inv-btn-sec { flex:1; background:transparent; border:1px solid rgba(255,255,255,0.1); color:var(--smoke); font-family:'Courier Prime',monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; padding:16px; cursor:pointer; transition:all 0.2s; }
+.inv-btn-sec:hover { border-color:var(--accent); color:var(--paper); }
+
+#accusation { display:none; min-height:100vh; flex-direction:column; align-items:center; justify-content:center; padding:48px 24px; background:radial-gradient(ellipse at 50% 30%, #0a1428 0%, var(--bg) 70%); text-align:center; }
+.acc-label { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:0.5em; text-transform:uppercase; color:var(--accent); margin-bottom:16px; display:block; }
+.acc-title { font-family:'Special Elite',cursive; font-size:clamp(28px,8vw,52px); color:var(--paper); margin-bottom:8px; line-height:1; }
+.acc-sub { font-family:'Libre Baskerville',serif; font-style:italic; color:var(--smoke); font-size:15px; margin-bottom:12px; max-width:360px; line-height:1.7; }
+.acc-warning { font-family:'Courier Prime',monospace; font-size:10px; letter-spacing:0.15em; color:rgba(201,162,39,0.7); margin-bottom:32px; }
+.suspect-select { display:flex; flex-direction:column; gap:10px; width:100%; max-width:420px; margin-bottom:32px; }
+.suspect-option { background:rgba(238,240,248,0.04); border:1px solid rgba(238,240,248,0.1); padding:16px 18px; cursor:pointer; transition:all 0.2s; text-align:left; display:flex; align-items:center; gap:14px; }
+.suspect-option:hover { border-color:var(--accent); background:rgba(42,74,155,0.08); }
+.suspect-option.selected { border-color:var(--gold); background:rgba(201,162,39,0.08); }
+.so-icon { font-size:22px; flex-shrink:0; }
+.so-info { flex:1; }
+.so-name { font-family:'Special Elite',cursive; font-size:16px; color:var(--paper); display:block; margin-bottom:2px; }
+.so-role { font-family:'Courier Prime',monospace; font-size:8px; letter-spacing:0.2em; text-transform:uppercase; color:var(--smoke); display:block; }
+.so-motive { font-family:'Libre Baskerville',serif; font-size:11px; font-style:italic; color:rgba(238,240,248,0.4); display:block; margin-top:3px; }
+.acc-btn { background:var(--navy); border:none; color:var(--paper); font-family:'Special Elite',cursive; font-size:14px; letter-spacing:0.3em; text-transform:uppercase; padding:18px 48px; cursor:pointer; transition:all 0.2s; width:100%; max-width:420px; }
+.acc-btn:hover { background:var(--accent); }
+.acc-btn:disabled { opacity:0.3; cursor:not-allowed; }
+
+#verdict { display:none; min-height:100vh; flex-direction:column; align-items:center; justify-content:center; padding:48px 24px; text-align:center; }
+.verdict-stamp { font-family:'Special Elite',cursive; font-size:clamp(36px,10vw,72px); font-weight:700; line-height:1; margin-bottom:20px; display:block; }
+.verdict-correct .verdict-stamp { color:#4a9a5a; }
+.verdict-wrong .verdict-stamp { color:#8b4a1a; }
+.verdict-title { font-family:'Libre Baskerville',serif; font-size:clamp(16px,4.5vw,26px); font-style:italic; color:var(--paper); margin-bottom:12px; }
+.verdict-reveal { font-family:'Courier Prime',monospace; font-size:12px; color:var(--smoke); line-height:1.8; max-width:400px; margin:0 auto 28px; }
+.twist-box { background:rgba(42,74,155,0.1); border:1px solid rgba(42,74,155,0.3); border-top:3px solid var(--accent); padding:20px 22px; max-width:420px; width:100%; margin-bottom:24px; text-align:left; }
+.twist-label { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:0.4em; text-transform:uppercase; color:var(--accent); margin-bottom:10px; display:block; }
+.twist-text { font-family:'Libre Baskerville',serif; font-size:13px; line-height:1.8; color:var(--paper); font-style:italic; }
+.verdict-box { background:var(--paper); color:var(--ink); padding:24px 22px; max-width:420px; width:100%; margin-bottom:24px; text-align:left; box-shadow:4px 4px 0 rgba(0,0,0,0.4); }
+.vb-label { font-family:'Courier Prime',monospace; font-size:9px; letter-spacing:0.4em; text-transform:uppercase; color:var(--smoke); border-bottom:1px solid rgba(8,16,14,0.2); padding-bottom:6px; margin-bottom:12px; }
+.vb-text { font-family:'Libre Baskerville',serif; font-size:13px; line-height:1.8; color:var(--ink); font-style:italic; }
+.restart-btn { background:transparent; border:1px solid rgba(255,255,255,0.15); color:var(--smoke); font-family:'Courier Prime',monospace; font-size:10px; letter-spacing:0.3em; text-transform:uppercase; padding:14px 32px; cursor:pointer; transition:all 0.2s; }
+.restart-btn:hover { border-color:var(--accent); color:var(--paper); }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes cardReveal { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+.card-reveal { animation:cardReveal 0.4s ease forwards; }
+</style>
+</head>
+<body>
+
+<div id="cover">
+  <span class="case-stamp">★ Caso #003 — Edición Extendida</span>
+  <div class="case-number">Expediente Especial — Para Parejas Detectives</div>
+  <div class="cover-title">
+    <span class="caso">crimen en</span>
+    <span class="alta">ALTA</span>
+    <span class="mar">MAR</span>
+  </div>
+  <div class="cover-divider"></div>
+  <p class="cover-desc">Un magnate muerto en altamar. Sin salida posible. Cuatro sospechosos. Y el culpable es el que menos esperan.</p>
+  <div class="cover-tags">
+    <span class="ctag">🕵️ 2 detectives</span>
+    <span class="ctag">🔍 16 pistas</span>
+    <span class="ctag">⚠️ Pistas falsas</span>
+    <span class="ctag">⏱️ 60-90 min</span>
+  </div>
+  <button class="open-btn" onclick="showScreen('briefing')">Abrir expediente →</button>
+</div>
+
+<div id="briefing">
+  <div class="brief-header">
+    <span class="brief-label">Expediente confidencial · Caso #003</span>
+    <h2 class="brief-title">Crimen en alta mar</h2>
+  </div>
+  <div class="warning-box">
+    <div class="warning-text">⚠ ADVERTENCIA: El hijo heredero parece culpable desde la pista 3. Es una trampa deliberada. El verdadero culpable tiene una coartada casi perfecta con una grieta microscópica. Busquen lo que no cambia entre testimonios: eso es lo que alguien olvidó fabricar.</div>
+  </div>
+  <div class="case-file">
+    <div class="file-section">
+      <div class="file-label">El crimen</div>
+      <p class="file-text"><strong>Armando Celestino</strong>, 67 años, magnate naviero, fue encontrado muerto en su camarote de lujo. Traumatismo craneal. El barco estaba a 200 millas de la costa. Nadie pudo escapar. El asesino pasó la noche entre champagne y conversación, sabiendo exactamente lo que había hecho.</p>
+    </div>
+    <div class="file-section">
+      <div class="file-label">Lo que nadie sabe todavía</div>
+      <p class="file-text">Armando había convocado a las cuatro personas en el crucero con una sola excusa: "celebrar un nuevo negocio". La verdad: iba a revelar que sabía los secretos de cada uno. Tenía documentos. Tenía grabaciones. Y pensaba usarlos.</p>
+    </div>
+    <div class="file-section">
+      <div class="file-label">Los sospechosos</div>
+      <div class="suspect-grid">
+        <div class="suspect-card"><div class="suspect-name">💍 Isabella Vane</div><div class="suspect-role">La esposa · 29 años · contrato nupcial</div></div>
+        <div class="suspect-card"><div class="suspect-name">⚖️ Tomás Celestino</div><div class="suspect-role">El hijo · excluido del testamento</div></div>
+        <div class="suspect-card"><div class="suspect-name">🥂 Serena Bloch</div><div class="suspect-role">La socia · fraude de 12 millones</div></div>
+        <div class="suspect-card"><div class="suspect-name">🗝️ Capitán Vorel</div><div class="suspect-role">El capitán · 18 años de servicio</div></div>
+      </div>
+    </div>
+    <div class="file-section">
+      <div class="file-label">Instrucciones</div>
+      <p class="file-text">Lean cada pista en voz alta. El caso tiene dos pistas plantadas deliberadamente. Al llegar a la Fase III, el culpable real va a ser evidente — pero solo si prestaron atención a los detalles de tiempo y acceso en las fases anteriores.</p>
+    </div>
+  </div>
+  <button class="start-invest-btn" onclick="startInvestigation()">Iniciar investigación →</button>
+</div>
+
+<div id="investigation">
+  <div class="inv-header">
+    <div>
+      <div class="inv-case">Caso Celestino · Alta Mar · Activo</div>
+      <div class="inv-phase" id="phase-name">Fase I — La escena</div>
+    </div>
+    <div class="clue-counter" id="clue-counter">Pista 1 de 16</div>
+  </div>
+  <div class="phase-bar"><div class="phase-fill" id="phase-fill" style="width:0%"></div></div>
+  <div class="phase-badge" id="phase-badge">⚓ Fase I — Examinen el camarote con precisión</div>
+  <div class="clue-area">
+    <div id="clue-display" class="clue-card pista-normal card-reveal" style="min-height:220px;display:flex;align-items:center;justify-content:center;"><span style="font-family:'Libre Baskerville',serif;font-style:italic;color:var(--smoke);">Abriendo expediente...</span></div>
+  </div>
+  <div class="inv-actions">
+    <button class="inv-btn-sec" onclick="prevClue()">← Anterior</button>
+    <button class="inv-btn-main" id="next-clue-btn" onclick="nextClue()">Siguiente pista →</button>
+  </div>
+</div>
+
+<div id="accusation">
+  <span class="acc-label">Momento de la verdad</span>
+  <h2 class="acc-title">La acusación final</h2>
+  <p class="acc-sub">200 millas de la costa. 16 pistas analizadas. El asesino todavía está a bordo.</p>
+  <p class="acc-warning">⚠ El culpable más señalado en las primeras pistas no es el real.</p>
+  <div class="suspect-select">
+    <div class="suspect-option" onclick="selectSuspect('isabella')">
+      <span class="so-icon">💍</span>
+      <div class="so-info"><span class="so-name">Isabella Vane</span><span class="so-role">La esposa joven</span><span class="so-motive">Motivo: el divorcio la dejaba con el 8%</span></div>
+    </div>
+    <div class="suspect-option" onclick="selectSuspect('tomas')">
+      <span class="so-icon">⚖️</span>
+      <div class="so-info"><span class="so-name">Tomás Celestino</span><span class="so-role">El hijo heredero</span><span class="so-motive">Motivo: excluido del nuevo testamento</span></div>
+    </div>
+    <div class="suspect-option" onclick="selectSuspect('serena')">
+      <span class="so-icon">🥂</span>
+      <div class="so-info"><span class="so-name">Serena Bloch</span><span class="so-role">La socia</span><span class="so-motive">Motivo: el fraude de 12 millones iba a salir</span></div>
+    </div>
+    <div class="suspect-option" onclick="selectSuspect('capitan')">
+      <span class="so-icon">🗝️</span>
+      <div class="so-info"><span class="so-name">Capitán Vorel</span><span class="so-role">El capitán</span><span class="so-motive">Motivo: 18 años de un secreto enterrado</span></div>
+    </div>
+  </div>
+  <button class="acc-btn" id="acc-btn" disabled onclick="revealVerdict()">Presentar acusación →</button>
+</div>
+
+<div id="verdict"></div>
+
+<script>
+const CULPRIT = 'serena';
+
+const clues = [
+  {
+    phase:'Fase I — La escena del crimen',
+    badge:'⚓ Fase I — Cada detalle importa',
+    tipo:'pista-normal',
+    type:'Informe forense',
+    text:'Armando murió por un golpe en la sien derecha con un objeto contundente de bronce. El ángulo del impacto indica que quien golpeó estaba de pie a su derecha y era zurdo — o golpeó con la mano izquierda en un movimiento de revés. El golpe fue único y preciso: alguien que sabía exactamente dónde golpear, o alguien que tuvo mucha suerte.',
+    action:'→ Un solo golpe, preciso, desde la derecha de la víctima.',
+    debate:'¿Quién de los cuatro sospechosos es zurdo o ambidiestro? Este detalle va a importar en la Fase III.'
+  },
+  {
+    phase:'Fase I — La escena del crimen',
+    badge:'⚓ Fase I — Cada detalle importa',
+    tipo:'pista-normal',
+    type:'La caja fuerte',
+    text:'La caja fuerte del camarote estaba abierta y vacía. Contenía, según el registro del barco, un sobre con grabaciones en formato digital y documentos firmados. El código de la caja era una combinación de 6 dígitos que Armando solo había compartido con una persona: su asistente personal, que no estaba en el crucero. Sin embargo, alguien la abrió. Sin forzarla.',
+    action:'→ Alguien conocía el código o lo obtuvo.',
+    debate:'Si el asistente está en tierra, ¿cómo llegó el código a bordo? ¿Alguien lo encontró, lo forzó a decirlo, o lo robó antes de embarcar?'
+  },
+  {
+    phase:'Fase I — La escena del crimen',
+    badge:'⚓ Fase I — Cada detalle importa',
+    tipo:'pista-falsa',
+    type:'⚠ POSIBLE CONTRADICCIÓN — El botón de Tomás',
+    text:'En la mano de Armando se encontró un botón de nácar azul marino. Al revisar la ropa de los sospechosos, le faltaba un botón a Tomás Celestino en la manga del saco. El botón coincide en color y material. Sin embargo, el análisis del hilo reveló que el botón de la mano de Armando tenía hilo sintético, mientras que los botones del saco de Tomás usaban hilo de seda natural. No son del mismo saco.',
+    action:'→ El botón de Tomás y el de Armando no coinciden.',
+    debate:'Alguien colocó un botón similar en la mano de Armando para incriminar a Tomás. ¿Quién tenía acceso al cuerpo antes de que llegara el médico?'
+  },
+  {
+    phase:'Fase I — La escena del crimen',
+    badge:'⚓ Fase I — Cada detalle importa',
+    tipo:'pista-normal',
+    type:'Las copas de champagne',
+    text:'En el camarote había dos copas de champagne. Una completamente vacía, la de Armando. La otra apenas tocada — solo un sorbo. El análisis reveló que en la copa casi llena había restos de un ansiolítico de acción rápida. Quien bebió ese sorbo recibió una dosis que produce somnolencia intensa en 20 minutos — pero no suficiente para perder el conocimiento si la persona es de contextura grande.',
+    action:'→ Alguien drogó su propia copa para simular que estaba incapacitado.',
+    debate:'Si alguien se drogó a sí mismo deliberadamente con una dosis baja, quería tener una coartada de "estaba dormido" o "no me sentía bien". ¿Quién reportó sentirse mal esa noche?'
+  },
+  {
+    phase:'Fase I — La escena del crimen',
+    badge:'⚓ Fase I — Cada detalle importa',
+    tipo:'pista-normal',
+    type:'El pisapapeles faltante',
+    text:'El inventario del camarote de Armando incluía un pisapapeles de bronce con forma de ancla — un regalo del Capitán Vorel por los 15 años de servicio. El pisapapeles no fue encontrado. El médico del barco confirmó que la herida es consistente con un objeto de ese tamaño y peso. Alguien lo tiró al mar o lo escondió a bordo.',
+    action:'→ El arma era el pisapapeles de bronce. Probablemente está en el mar.',
+    debate:'Tirarlo al mar requería acceso a cubierta sin ser visto. ¿Quién tenía libertad de movimiento en el barco sin levantar sospechas?'
+  },
+  {
+    phase:'Fase II — Los sospechosos bajo la lupa',
+    badge:'👥 Fase II — Cada versión tiene una fisura',
+    tipo:'pista-normal',
+    type:'Interrogatorio — Isabella Vane',
+    text:'La esposa dice que fue al camarote a las 22:10 "a pedirle que reconsiderara el divorcio". Armando la echó en menos de 10 minutos. Fue directamente al bar, donde el barman y dos pasajeros la vieron desde las 22:25 hasta las 00:00. Tomó cuatro copas de vino. Lloró. Habló con desconocidos. Una coartada ruidosa, pública y con múltiples testigos. Demasiado perfecta para ser casual.',
+    action:'→ Isabella construyó una coartada imposible de refutar. ¿O simplemente estaba devastada?',
+    debate:'Una coartada tan obvia puede ser real o fabricada. Pero fabricar llantos y conversaciones con desconocidos durante 90 minutos es muy difícil. ¿Es inocente o es una actuación de nivel profesional?'
+  },
+  {
+    phase:'Fase II — Los sospechosos bajo la lupa',
+    badge:'👥 Fase II — Cada versión tiene una fisura',
+    tipo:'pista-falsa',
+    type:'⚠ POSIBLE CONTRADICCIÓN — Tomás y los documentos',
+    text:'En el camarote de Tomás se encontró una carpeta con fotocopias de los documentos que estaban en la caja fuerte de Armando. Tomás dice que las fotocopias las tenía porque su abogado se las había pasado semanas antes como "información de contexto". Verificamos con el abogado: confirma la versión de Tomás. Las copias fueron enviadas por email hace tres semanas.',
+    action:'→ Las fotocopias en el camarote de Tomás tienen origen legítimo.',
+    debate:'Nuevamente, Tomás tiene explicación para todo lo que lo incrimina. ¿Es inocente o muy bien preparado? Noten que cada vez que una pista apunta a Tomás, tiene respuesta. Eso en sí mismo es sospechoso — pero de otro modo.'
+  },
+  {
+    phase:'Fase II — Los sospechosos bajo la lupa',
+    badge:'👥 Fase II — Cada versión tiene una fisura',
+    tipo:'pista-normal',
+    type:'Interrogatorio — Tomás Celestino',
+    text:'El hijo mayor admite que estuvo en el camarote de su padre de 23:20 a 00:15 — 55 minutos. Dice que discutieron sobre el testamento y que su padre se negó a cambiar nada. Dice que Armando estaba vivo cuando se fue. El médico confirma que la muerte ocurrió entre las 23:00 y las 00:30. Tomás estuvo allí durante toda esa ventana de tiempo. Pero algo no cierra: a las 00:10, el sistema del barco registra que la tarjeta de Tomás fue usada para acceder a la cubierta exterior — cinco minutos antes de que "saliera del camarote".',
+    action:'→ Tomás estuvo en cubierta a las 00:10 — mientras supuestamente seguía en el camarote.',
+    debate:'¿Error del sistema o Tomás mintió sobre cuándo salió? Si salió a las 00:10 a cubierta, ¿qué hizo allí cinco minutos en la oscuridad del mar?'
+  },
+  {
+    phase:'Fase II — Los sospechosos bajo la lupa',
+    badge:'👥 Fase II — Cada versión tiene una fisura',
+    tipo:'pista-normal',
+    type:'Interrogatorio — Capitán Vorel',
+    text:'El capitán dice que fue al camarote a las 23:05 por una "cuestión operativa" y que duró cinco minutos. Su coartada posterior: en el puente de mando desde las 23:30 hasta las 02:00, con registro electrónico y testimonio de tres marineros. Sin embargo, el período entre las 23:10 y las 23:30 — veinte minutos — no está cubierto por nadie. Vorel dice que "caminó por cubierta". Nadie lo vio.',
+    action:'→ Veinte minutos sin coartada en el momento exacto de la muerte.',
+    debate:'El capitán conoce cada rincón del barco, cada cámara, cada ángulo muerto. Si alguien sabe cómo moverse sin ser visto, es él. Pero ¿cuál sería su motivo?'
+  },
+  {
+    phase:'Fase II — Los sospechosos bajo la lupa',
+    badge:'👥 Fase II — Cada versión tiene una fisura',
+    tipo:'pista-normal',
+    type:'Interrogatorio — Serena Bloch',
+    text:'La socia dice que fue al camarote a las 22:45 a confrontar a Armando por las transferencias ilegales. Dice que discutieron durante 15 minutos y que Armando le dijo que "ya tenía todo documentado y que el lunes hablaría con su abogado". Serena dice que se fue directamente a su camarote a las 23:00, tomó un ansiolítico porque estaba "muy alterada" y no salió más. El médico del barco confirma que Serena solicitó ansiolíticos a las 23:15. Solo hay un problema: solicitó una dosis doble.',
+    action:'→ Serena tomó el doble de la dosis habitual.',
+    debate:'Una dosis doble produce somnolencia profunda en 30 minutos — pero también puede usarse para crear la ilusión de que uno estaba inconsciente durante horas. ¿Serena estaba realmente dormida o construyó una coartada química?'
+  },
+  {
+    phase:'Fase III — La verdad que el mar casi se llevó',
+    badge:'⚠️ Fase III — El caso se cierra aquí',
+    tipo:'pista-clave',
+    type:'Pista crítica #1 — El código de la caja fuerte',
+    text:'Encontramos cómo alguien obtuvo el código. Tres semanas antes del crucero, Serena Bloch contrató a una firma de seguridad privada para hacer un "análisis de vulnerabilidades" en los sistemas de Armando. Uno de los técnicos tuvo acceso al asistente personal durante una reunión. El asistente, sin saberlo, usó la combinación de la caja frente al técnico mientras guardaba documentos. El técnico era empleado de la firma de Serena.',
+    action:'→ Serena tenía el código desde antes de embarcar.',
+    debate:'Planificó el robo de los documentos con anticipación. ¿Planificó también el asesinato, o fue una decisión de último momento esa noche?'
+  },
+  {
+    phase:'Fase III — La verdad que el mar casi se llevó',
+    badge:'⚠️ Fase III — El caso se cierra aquí',
+    tipo:'pista-clave',
+    type:'Pista crítica #2 — La copa casi llena',
+    text:'El ansiolítico en la copa de champagne fue identificado: lorazepam en dosis de 1mg. La prescripción de Serena Bloch incluye exactamente ese medicamento en esa dosis. Ella tomó un comprimido antes de ir al camarote de Armando, lo disolvió en su copa, bebió un sorbo y dejó el resto. Así tenía una razón médica para "no recordar" nada de esa noche si alguien preguntaba. El efecto a esa dosis tarda 20 minutos en sentirse — ella calculó el tiempo de vuelta a su camarote.',
+    action:'→ Serena drogó su propia copa como coartada química.',
+    debate:'Esto requiere sangre fría extraordinaria: entrar al camarote, golpear, abrir la caja fuerte, tomar los documentos y salir — todo en menos de 15 minutos — sabiendo que el ansiolítico empezaría a hacer efecto al llegar a su cuarto.'
+  },
+  {
+    phase:'Fase III — La verdad que el mar casi se llevó',
+    badge:'⚠️ Fase III — El caso se cierra aquí',
+    tipo:'pista-clave',
+    type:'Pista crítica #3 — La mano izquierda',
+    text:'Revisamos los registros médicos de los sospechosos disponibles a bordo. Serena Bloch tuvo una lesión en el tendón de la mano derecha hace dos años — usa la mano izquierda para la mayoría de las actividades que requieren fuerza. Es funcionalmente zurda para acciones físicas. El golpe fue dado con la mano izquierda, desde la derecha de la víctima, con un movimiento de revés. Es exactamente cómo golpearía Serena.',
+    action:'→ La zurdera funcional de Serena coincide con el ángulo del golpe.',
+    debate:'Tres pistas técnicas convergen en Serena: el código, la copa, la mano. ¿Es suficiente para acusar?'
+  },
+  {
+    phase:'Fase III — La verdad que el mar casi se llevó',
+    badge:'⚠️ Fase III — El caso se cierra aquí',
+    tipo:'pista-clave',
+    type:'Pista crítica #4 — Lo que Armando sabía',
+    text:'Los fragmentos recuperados de los documentos de la caja fuerte revelaron que Armando tenía grabaciones de Serena instruyendo a empleados para falsificar contratos navieros. No eran 12 millones: eran 47 millones en 8 años, distribuidos en decenas de operaciones. Si esa información llegaba a los reguladores, Serena enfrentaría entre 15 y 20 años de prisión. No era un problema de negocios. Era el fin de su vida.',
+    action:'→ El motivo real era incomparablemente más grande de lo que parecía.',
+    debate:'Con 47 millones y 20 años de prisión en juego, matar a Armando no era una reacción de ira. Era una decisión calculada. ¿Cambia eso la culpabilidad?'
+  },
+  {
+    phase:'Fase III — La verdad que el mar casi se llevó',
+    badge:'⚠️ Fase III — El caso se cierra aquí',
+    tipo:'pista-clave',
+    type:'Pista final — El pisapapeles',
+    text:'Un marinero de guardia esa noche recuerda haber visto a una mujer en la cubierta de popa a las 23:18 — "de vestido oscuro, pelo recogido, miraba el mar". La descripción coincide con Serena. Estuvo allí menos de dos minutos. Luego volvió adentro. La cubierta de popa es el único lugar desde donde algo tirado al mar en esa posición del barco desaparecería sin dejar rastro. A las 23:18, Armando llevaba entre 8 y 18 minutos de muerto.',
+    action:'→ Serena tiró el pisapapeles al mar a las 23:18. Armando ya estaba muerto.',
+    debate:'Tienen todo. El código robado, la copa drogada, la zurdera funcional, el motivo real y el marinero que la vio. ¿Están listos para acusar?'
+  }
+];
+
+let state = { current:0, selected:null };
+
+function showScreen(id) {
+  ['cover','briefing','investigation','accusation','verdict'].forEach(s=>{ const el=document.getElementById(s); if(el) el.style.display='none'; });
+  const t=document.getElementById(id);
+  if(t){ t.style.display='flex'; t.style.flexDirection='column'; window.scrollTo(0,0); }
+}
+
+function startInvestigation() { showScreen('investigation'); renderClue(); }
+
+function renderClue() {
+  const c=clues[state.current];
+  document.getElementById('phase-fill').style.width=((state.current+1)/clues.length*100)+'%';
+  document.getElementById('phase-name').textContent=c.phase;
+  document.getElementById('phase-badge').textContent=c.badge;
+  document.getElementById('clue-counter').textContent=`Pista ${state.current+1} de ${clues.length}`;
+  document.getElementById('next-clue-btn').textContent=state.current<clues.length-1?'Siguiente pista →':'Hacer la acusación →';
+  const d=document.getElementById('clue-display');
+  d.className=`clue-card ${c.tipo} card-reveal`;
+  d.innerHTML=`
+    <span class="clue-type">— ${c.type} —</span>
+    <span class="clue-number">${String(state.current+1).padStart(2,'0')}</span>
+    <div class="clue-text">"${c.text}"</div>
+    <div class="clue-action">${c.action}</div>
+    ${c.debate?`<div class="clue-debate">💬 ${c.debate}</div>`:''}
+  `;
+}
+
+function nextClue() { if(state.current<clues.length-1){state.current++;renderClue();}else{showScreen('accusation');} }
+function prevClue() { if(state.current>0){state.current--;renderClue();} }
+
+function selectSuspect(s) {
+  state.selected=s;
+  document.querySelectorAll('.suspect-option').forEach(el=>el.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  document.getElementById('acc-btn').disabled=false;
+}
+
+function revealVerdict() {
+  const correct=state.selected===CULPRIT;
+  const v=document.getElementById('verdict');
+  v.className=correct?'verdict-correct':'verdict-wrong';
+  v.innerHTML=`
+    <span class="verdict-stamp">${correct?'✓ RESUELTO':'✗ INCORRECTO'}</span>
+    <h2 class="verdict-title">${correct?'Serena Bloch. Lo planeó durante semanas. Ejecutó en minutos.':'El culpable era Serena Bloch — la socia que nadie miraba.'}</h2>
+    <p class="verdict-reveal">${correct?'Lo vieron cuando la mayoría no lo ve: detrás de la coartada química perfecta y del sospechoso plantado. Detectaron la zurdera, el código robado y el marinero. Trabajo impecable.':'Tomás era la trampa perfecta. Tenía motivo, estuvo allí y cada pista apuntaba a él. Pero todas tenían respuesta. Serena construyó eso deliberadamente.'}</p>
+    <div class="twist-box">
+      <span class="twist-label">⚠ El giro — Lo que hace este caso diferente</span>
+      <p class="twist-text">Serena no mató por impulso. Lo planificó semanas antes: obtuvo el código de la caja fuerte, preparó el ansiolítico como coartada química, y eligió el crucero porque en altamar no hay jurisdicción clara y el arma puede desaparecer en el océano. El botón en la mano de Armando también lo plantó ella — lo arrancó del saco de Tomás mientras cenaban juntos la primera noche. Un crimen de precisión quirúrgica disfrazado de crimen pasional.</p>
+    </div>
+    <div class="verdict-box">
+      <div class="vb-label">Las dos pistas falsas — ¿Las detectaron?</div>
+      <p class="vb-text">Pista 3: El botón de Tomás no coincidía con el botón en la mano de Armando — el hilo era diferente. Serena lo plantó. Pista 7: Las fotocopias en el camarote de Tomás tenían origen legítimo. Ambas pistas fabricadas apuntaban al hijo. Serena sabía exactamente qué evidencia plantar para que la investigación mirara en otra dirección.</p>
+    </div>
+    <button class="restart-btn" onclick="location.reload()">↺ Nuevo caso</button>
+  `;
+  showScreen('verdict');
+}
+</script>
+</body>
+</html>
